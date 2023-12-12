@@ -166,8 +166,8 @@ public class Sketch extends PApplet {
     if (System.currentTimeMillis() - startTime - lastTime > 70) {
 
       // calculations of distance from mouse to center of wizard monkey.
-      float fltCurrentHorizontal = (mouseX - (fltMonkeyX + 40));
-      float fltCurrentVertical = (mouseY - (fltMonkeyY + 40));
+      float fltCurrentHorizontal = (mouseX - (fltMonkeyX));
+      float fltCurrentVertical = (mouseY - (fltMonkeyY));
       float fltHyp = (float) Math.sqrt(fltCurrentHorizontal * fltCurrentHorizontal
           + fltCurrentVertical * fltCurrentVertical);
 
@@ -187,7 +187,7 @@ public class Sketch extends PApplet {
       float fltAng = asin(fltCurrentVertical / fltHyp);
       if (mouseX < fltMonkeyX + 40) {
         // if the mouse is to the left of center of wizard, modify the angle
-        fltAng = PI - fltAng;
+        fltAng =  (float)(3.14159265358979323846 - fltAng);
       }
       angles.addLast(fltAng);
 
