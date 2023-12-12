@@ -1,7 +1,6 @@
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.Timer;
-import java.util.TimerTask;
 import java.util.Iterator;
 
 import processing.core.PApplet;
@@ -16,6 +15,7 @@ public class Sketch extends PApplet {
 
   // Initilizing variables/positions
   long startTime = System.currentTimeMillis();
+  boolean boolMouse = false; 
 
   float fltMonkeyX = 100;
   float fltMonkeyY = 100;
@@ -51,25 +51,30 @@ public class Sketch extends PApplet {
    */
   public void setup() {
     imgBackground = loadImage("MonkeyMeadow.png");
-    imgProjectile = loadImage("Projectile.jpg");
+    imgProjectile = loadImage("Projectile.png");
     imgWizardMonkey = loadImage("WizardMonkey.png");
   }
 
   /**
    * Description: main loop to run the program
    * Note: some methods are not called as they are called automatically by the
-   * program, such as mousePressed etc.
+   * program, such as keyPressed(), keyReleased() etc.
    * 
    */
   public void draw() {
-
     image(imgBackground, 0, 0);
 
     movement();
+
+    
+
     image(imgWizardMonkey, fltMonkeyX - 40, fltMonkeyY - 40);
 
-    drawProjectile();
+    if(boolMouse){
+    ifMousePressed();
+    }
 
+    drawProjectile();
   }
 
   public void drawProjectile() {
@@ -80,7 +85,7 @@ public class Sketch extends PApplet {
       long spawnTime = iteratorSpawn.next();
 
       // Check if the element should be removed
-      if (System.currentTimeMillis()-startTime - spawnTime > 2500) {
+      if (System.currentTimeMillis() - startTime - spawnTime > 2500) {
         iteratorSpawn.remove(); // Remove using the iterator's remove method
         // Also remove corresponding elements from other Deques
 
@@ -107,12 +112,12 @@ public class Sketch extends PApplet {
       float speedXValue = iteratorSpeedX.next();
       float speedYValue = iteratorSpeedY.next();
 
-      int temp = (int)(System.currentTimeMillis()-startTime - iteratorSpawn.next());
+      int temp = (int) (System.currentTimeMillis() - startTime - iteratorSpawn.next());
 
       pushMatrix();
-      translate(x+(temp*speedXValue/5), y+(temp*speedYValue/5));
-      rotate(angle-PI/2);
-      translate(-15, -15);
+      translate(x + (temp * speedXValue / 5), y + (temp * speedYValue / 5));
+      rotate(angle - PI / 2);
+      translate(-12, -15);
       image(imgProjectile, 0, 0);
       popMatrix();
 
@@ -147,7 +152,7 @@ public class Sketch extends PApplet {
   }
 
   /**
-   * Description: After each mouse clicked, it will check if 50 milliseconds have
+   * Description: After each mouse clicked, it will check if 70 milliseconds have
    * passed. If so, it will push information into the queue for projectile to be
    * drawn later on
    * 
@@ -156,13 +161,13 @@ public class Sketch extends PApplet {
    * 
    * @author: Gordon Z
    */
-  public void mousePressed() {
-    // check if 50 milliseconds has passed so there aren't too much projectiles.
-    if (System.currentTimeMillis() - startTime - lastTime > 50) {
+  public void ifMousePressed() {
+    // check if 70 milliseconds has passed so there aren't too much projectiles.
+    if (System.currentTimeMillis() - startTime - lastTime > 70) {
 
       // calculations of distance from mouse to center of wizard monkey.
       float fltCurrentHorizontal = (mouseX - (fltMonkeyX + 40));
-      float fltCurrentVertical =(mouseY - (fltMonkeyY + 40));
+      float fltCurrentVertical = (mouseY - (fltMonkeyY + 40));
       float fltHyp = (float) Math.sqrt(fltCurrentHorizontal * fltCurrentHorizontal
           + fltCurrentVertical * fltCurrentVertical);
 
@@ -179,12 +184,11 @@ public class Sketch extends PApplet {
        * since arcsin only returns angles of [-pi/2, pi/2], additional modification
        * is required to account for full 2pi rotation.
        */
-      float fltAng =  asin(fltCurrentVertical / fltHyp);
+      float fltAng = asin(fltCurrentVertical / fltHyp);
       if (mouseX < fltMonkeyX + 40) {
         // if the mouse is to the left of center of wizard, modify the angle
         fltAng = PI - fltAng;
       }
-      System.out.println(fltAng);
       angles.addLast(fltAng);
 
       // push the time of new projectile spawn and update the last time a projectile
@@ -192,6 +196,14 @@ public class Sketch extends PApplet {
       timeOfSpawn.addLast((int) (System.currentTimeMillis() - startTime));
       lastTime = (int) (System.currentTimeMillis() - startTime);
     }
+  }
+
+  public void mousePressed(){
+    boolMouse = true; 
+  }
+
+  public void mouseReleased(){
+    boolMouse = false; 
   }
 
   public void keyPressed() {
