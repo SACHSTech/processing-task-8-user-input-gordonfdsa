@@ -12,10 +12,13 @@ public class Sketch extends PApplet {
   PImage imgWizardMonkey;
   PImage imgProjectile;
   PImage imgBackground;
+  PImage imgBlueProjectile;
+  PImage imgRedProjectile;
 
   // Initilizing variables/positions
   long startTime = System.currentTimeMillis();
-  boolean boolMouse = false; 
+  boolean boolMouse = false;
+  boolean boolBlueAmmo = false;
 
   float fltMonkeyX = 100;
   float fltMonkeyY = 100;
@@ -53,6 +56,8 @@ public class Sketch extends PApplet {
     imgBackground = loadImage("MonkeyMeadow.png");
     imgProjectile = loadImage("Projectile.png");
     imgWizardMonkey = loadImage("WizardMonkey.png");
+    imgRedProjectile = loadImage("Projectile.png");
+    imgBlueProjectile = loadImage("BlueFire.png");
   }
 
   /**
@@ -65,17 +70,23 @@ public class Sketch extends PApplet {
     image(imgBackground, 0, 0);
 
     movement();
-
-    
-
     image(imgWizardMonkey, fltMonkeyX - 40, fltMonkeyY - 40);
 
-    if(boolMouse){
-    ifMousePressed();
+    if (mousePressed) {
+      ifMousePressed();
     }
-
     drawProjectile();
   }
+
+  /**
+   * Description: draws all projectiles currently in the list, 
+   * also removes projectiles which has been exsisting for too long
+   * 
+   * No param
+   * No return 
+   * 
+   * @author: Gordon Z
+   */
 
   public void drawProjectile() {
 
@@ -154,7 +165,7 @@ public class Sketch extends PApplet {
   /**
    * Description: After each mouse clicked, it will check if 70 milliseconds have
    * passed. If so, it will push information into the queue for projectile to be
-   * drawn later on
+   * drawn later on.
    * 
    * No param
    * No return
@@ -187,7 +198,7 @@ public class Sketch extends PApplet {
       float fltAng = asin(fltCurrentVertical / fltHyp);
       if (mouseX < fltMonkeyX + 40) {
         // if the mouse is to the left of center of wizard, modify the angle
-        fltAng =  (float)(3.14159265358979323846 - fltAng);
+        fltAng = (float) (3.14159265358979323846 - fltAng);
       }
       angles.addLast(fltAng);
 
@@ -198,40 +209,78 @@ public class Sketch extends PApplet {
     }
   }
 
-  public void mousePressed(){
-    boolMouse = true; 
+  /**
+   * Description: Called automatically. If the right button is clicked, character will teleport
+   * to current mouse location. Projectiles will change to blue
+   * 
+   * No param
+   * No return 
+   * 
+   * @author: Gordon Z
+   */
+  public void mousePressed() {
+    
+    if (mouseButton == RIGHT) {
+      fltMonkeyX = mouseX;
+    fltMonkeyY = mouseY;
+      imgProjectile = imgBlueProjectile;
+    }
   }
 
-  public void mouseReleased(){
-    boolMouse = false; 
+  /**
+   * Description: when mouse is released, switch projectile back to red. 
+   * 
+   * No param 
+   * No return 
+   * 
+   * @author: Gordon Z
+   */
+  public void mouseReleased() {
+    imgProjectile = imgRedProjectile;
   }
 
+  /**
+   * Description: when keys are pressed, respective keys will have their associated movement boolean changed to true
+   * 
+   * No param 
+   * No return 
+   * 
+   * @author: Gordon Z
+   */
   public void keyPressed() {
-    if (key == 'w') {
+    if (key == 'w'||keyCode== UP) {
       boolUp = true;
     }
-    if (key == 'a') {
+    if (key == 'a'||keyCode==LEFT) {
       boolLeft = true;
     }
-    if (key == 's') {
+    if (key == 's'||keyCode==DOWN) {
       boolDown = true;
     }
-    if (key == 'd') {
+    if (key == 'd'||keyCode==RIGHT) {
       boolRight = true;
     }
   }
 
+  /**
+   * Description: when key is released, change movement boolean to false.  
+   * 
+   * No param 
+   * No return 
+   * 
+   * @author: Gordon Z
+   */
   public void keyReleased() {
-    if (key == 'w') {
+    if (key == 'w'||keyCode==UP) {
       boolUp = false;
     }
-    if (key == 'a') {
+    if (key == 'a'||keyCode==LEFT) {
       boolLeft = false;
     }
-    if (key == 's') {
+    if (key == 's'||keyCode==DOWN) {
       boolDown = false;
     }
-    if (key == 'd') {
+    if (key == 'd'||keyCode==RIGHT) {
       boolRight = false;
     }
   }
